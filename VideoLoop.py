@@ -11,10 +11,10 @@ class CircularQueue:
             self.front = 0
             self.rear = 0
             self.queueArray[self.rear] = item
+            self.length +=1
         else:
             self.rear = (self.rear + 1) % self.maxSize
             if self.rear == self.front:
-                print("Queue is full. Cannot enqueue.")
                 self.rear = (self.rear - 1 + self.maxSize) % self.maxSize
             else:
                 self.queueArray[self.rear] = item
