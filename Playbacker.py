@@ -7,9 +7,20 @@ import os
 from screeninfo import get_monitors
 
 """organize monitor displaying"""
-live = cv2.VideoCapture(0) 
+#get highest index camera
+cameraIndex = 5
+live = cv2.VideoCapture(cameraIndex)
+while not live.isOpened():
+    cameraIndex-=1
+    live.release()
+    if cameraIndex < 0:
+        print('No camera found. You need a camera.')
+        exit()
+    live = cv2.VideoCapture(cameraIndex)
+maxCamIndex = cameraIndex+1
+print('You have ' + str(maxCamIndex) + ' camera(s).')
+
 monitors = get_monitors()
-two = False
 two = len(monitors) > 1
 
 cv2.namedWindow('Live Video', cv2.WINDOW_NORMAL)
@@ -66,6 +77,7 @@ jumpForward5 = False
 stepFore = False
 stepBack = False
 clip = False
+toggleCameras = False
 
 frameCur = -1
 lbound = 0
@@ -73,6 +85,7 @@ rbound = -1
 clipCount = 0
 
 videoQueue = VideoLoop.CircularQueue(int(fps * 600)) # 10 minutes
+cameraCooldown = 0
 
 """infinite loop ran 30 times per second due live.read(). """
 while 1:
@@ -81,6 +94,8 @@ while 1:
     frame = cv2.flip(frame, 1)
     out.write(frame)
     rbound += 1
+    if cameraCooldown > 0:
+        cameraCooldown -= 1
 
     if videoQueue.isFull():
         lbound += 1
@@ -134,9 +149,16 @@ while 1:
         clipCount += 1
         
         clip = False
-
-
-
+    
+    if toggleCamera:
+        if cameraCooldown <= 0:
+            cameraIndex = (cameraIndex + 1) % maxCamIndex
+            live.release()
+            live = cv2.VideoCapture(cameraIndex)
+            cameraCooldown = int(fps)
+        toggleCamera = False
+        
+    
     """show screen"""
     playback = videoQueue.get(frameCur % videoQueue.maxSize)
     cv2.imshow("Replay", playback)
@@ -160,6 +182,8 @@ while 1:
         stepFore = True
     if k == ord('c'):
         clip = True
+    if k == ord('\\'):
+        toggleCamera = True
     if k == ord('q'): #escape
             break
     
