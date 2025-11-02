@@ -18,6 +18,7 @@ while not live.isOpened():
         exit()
     live = cv2.VideoCapture(cameraIndex)
 maxCamIndex = cameraIndex+1
+os.system('cls')
 print('You have ' + str(maxCamIndex) + ' camera(s).')
 
 monitors = get_monitors()
@@ -77,7 +78,7 @@ jumpForward5 = False
 stepFore = False
 stepBack = False
 clip = False
-toggleCameras = False
+toggleCamera = False
 
 frameCur = -1
 lbound = 0
@@ -151,7 +152,7 @@ while 1:
         clip = False
     
     if toggleCamera:
-        if cameraCooldown <= 0:
+        if cameraCooldown <= 0 and maxCamIndex > 1:
             cameraIndex = (cameraIndex + 1) % maxCamIndex
             live.release()
             live = cv2.VideoCapture(cameraIndex)
