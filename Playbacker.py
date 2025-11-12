@@ -88,14 +88,14 @@ lbound = 0
 rbound = -1
 clipCount = 0
 
-videoQueue = VideoLoop.CircularQueue(int(fps * 600)) # 10 minutes
+videoQueue = VideoLoop.CircularQueue(int(fps * 1800)) # 30 minutes
 cameraCooldown = 0
 
 """infinite loop ran fps times per second due live.read(). """
 while 1:
     ret, frame = live.read()
     if not ret: break
-    frame = cv2.flip(frame, 1)
+    #frame = cv2.flip(frame, 1)
     out.write(frame)
     rbound += 1
     if cameraCooldown > 0:
