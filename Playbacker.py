@@ -71,7 +71,7 @@ fourcc = cv2.VideoWriter.fourcc(*'mp4v')
 out = cv2.VideoWriter(fullpath, fourcc, fps, (int(live.get(3)),int(live.get(4)))) #write to file
 
 jumpSize = int(fps * 5)
-stepSize = int(2 * fps / 30)
+stepSize = int(1 * fps / 30)
 clipLength = int(fps * 5) #clip length 5 seconds each direction
 slomoSpeed = int(fps/10)
 
@@ -91,7 +91,7 @@ lbound = 0
 rbound = -1
 clipCount = 0
 
-videoQueue = VideoLoop.CircularQueue(int(fps * 1800)) # 30 minutes
+videoQueue = VideoLoop.CircularQueue(int(fps * 300)) # 30 minutes
 cameraCooldown = 0
 
 """infinite loop ran fps times per second due live.read(). """
@@ -114,6 +114,8 @@ while 1:
     videoQueue.enqueue(frame)
     
     """ \"methods\" """
+    if slomo: 
+        play = True
     if play:
         if slomo:
             pre = frameCur
